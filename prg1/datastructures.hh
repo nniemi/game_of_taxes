@@ -1,8 +1,8 @@
 // Datastructures.hh
 //
-// Student name:
-// Student email:
-// Student number:
+// Student name:  Niemi
+
+
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
@@ -95,12 +95,15 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance:
+    // Estimate of performance: O(1)
     // Short rationale for estimate:
+    // Gets the amount of towns from the hash.
     unsigned int town_count();
 
-    // Estimate of performance:
+    // Estimate of performance: O(N)
     // Short rationale for estimate:
+    // Complexity is linear since the algorithm goes through all the elements
+    // in the unordered_map.
     void clear_all();
 
     // Estimate of performance:
