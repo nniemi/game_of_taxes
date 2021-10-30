@@ -181,7 +181,22 @@ public:
     int total_net_tax(TownID id);
 
 private:
-    // Add stuff needed for your class implementation here
+    struct Town
+    {
+        Name name;
+        Coord coord;
+        int tax;
+
+        Town* vessel;
+    };
+
+
+    std::unordered_map<TownID, Town*> database;
+
+
+
+
+
 
 };
 

@@ -29,17 +29,7 @@ Type random_in_range(Type start, Type end)
 // an operation (Commenting out parameter name prevents compiler from
 // warning about unused parameters on operations you haven't yet implemented.)
 
-struct Town
-{
-    Name name;
-    Coord coord;
-    int tax;
 
-    Town* vessel;
-};
-
-
-std::unordered_map<TownID, Town*> database;
 
 
 
@@ -110,30 +100,75 @@ std::vector<TownID> Datastructures::all_towns()
     return all;
 }
 
-std::vector<TownID> Datastructures::find_towns(const Name &/*name*/)
+std::vector<TownID> Datastructures::find_towns(const Name &name)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("find_towns()");
+    std::vector<TownID> towns;
+
+    for (auto& i : database) {
+        if(i.second->name == name)
+            towns.push_back(name);
+    }
+    return towns;
 }
 
-bool Datastructures::change_town_name(TownID /*id*/, const Name &/*newname*/)
+bool Datastructures::change_town_name(TownID id, const Name &newname)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("change_town_name()");
+
+    // Checking if the town exists.
+    if(database.find(id) == database.end())
+        return false;
+
+    // Renaming the city.
+    database.at(id)->name = newname;
+    return true;
 }
 
 std::vector<TownID> Datastructures::towns_alphabetically()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("towns_alphabetically()");
+    // Creating a vector
+    std::vector<TownID> towns;
+
+    // Reserving memoryspace for the vector.
+    towns.reserve(database.size());
+
+    // Going through the database and pushing TownIDs to the vector.
+    for(auto& i : database) {
+        towns.push_back(i.first);
+    }
+
+    // Sorting by names of the towns, using lambda function to
+    // find the correct sorting.
+    std::sort(towns.begin(), towns.end(),[this](TownID a, TownID b)
+        {return database.at(a)->name < database.at(b)->name;});
+
+    // Returning the vector.
+    return towns;
+
 }
 
 std::vector<TownID> Datastructures::towns_distance_increasing()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("towns_distance_increasing()");
+    // Creating a vector
+    std::vector<TownID> towns;
+
+    // Reserving memoryspace for the vector.
+    towns.reserve(database.size());
+
+    // Going through the database and pushing TownIDs to the vector.
+    for(auto& i : database) {
+        towns.push_back(i.first);
+    }
+
+    // Sorting by the distance to origin (0,0), using lambda function to
+    // find the correct sorting.
+    std::sort(towns.begin(), towns.end(),[this](TownID a, TownID b)
+        {return sqrt(pow((0 - database.at(a)->coord.x),2.0) +
+                     pow((0 - database.at(a)->coord.y),2.0)) <
+                sqrt(pow((0 - database.at(b)->coord.x),2.0) +
+                     pow((0 - database.at(b)->coord.y),2.0));});
+
+    // Returning the vector.
+    return towns;
 }
 
 TownID Datastructures::min_distance()
