@@ -1,0 +1,40 @@
+------------------------------Game Of Taxes--------------------------------
+
+This program introduces a database manipulator, where you can store 
+data from towns and use functions to display this data. There are 
+total of 20 different functions to store and display data.
+
+This program uses std::unordered_map as datastructure. In this
+map TownIDs are used as keys and Town* struct is used value
+refering to a certain TownID. This is the most efficient
+datastructure since inserting to an unordered_map is O(N) in the
+worst case and constant in most cases. Also the struct is stored
+as an pointer since that way we can avoid using .at() which
+slows down the program a lot. 
+
+Most of the functions use .find() function to locate the corresponing
+struct from the database. This is linear in the worst case but usually
+constant. 
+The sorting algorithms had some differences, when sorting alphabetically,
+std::sort was the best according to performance tests after the implementation
+was transformed from .at() method to pointers. Then again when sorting
+by distance, inserting to a multimap was the most efficient since by
+using std::sort with lambdas had to calculate distances a lot more than
+by inserting to a map which sorts immediatly. After testing, it was
+noticed, that map-inserting is about 8 times faster than sorting when
+there was a lot of data.
+
+Minimum and maximum elements were implemented using std algorithms
+std::min_element and std::max_element with lambdas, these were both linear.
+
+Some of the functions had pre-determined size, since all of the elements
+from the database were stored to them. This allowed to use .reserve()
+which reserves a memory slot from the RAM for these vectors, this made
+memory usage much more consistent. 
+
+The last two functions were implemented using recursion since all of the
+nodes had to be checked to get information about all of them. This made
+the function O(N) at the worst case. 
+
+---------------------------------------------------------------------------
+

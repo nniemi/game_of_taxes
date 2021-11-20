@@ -271,14 +271,14 @@ std::vector<TownID> Datastructures::get_town_vassals(TownID id)
     std::vector<TownID> towns;
     const auto town = database.find(id);
 
-    // Reserving the vector.
-    towns.reserve(town->second->neighbour.size());
 
     // Checks if the town exists.
     if(town == database.end()) {
         towns.push_back(NO_TOWNID);
         return towns;
     }
+    // Reserving the vector.
+    towns.reserve(town->second->neighbour.size());
 
     // Checks if the town doesn't have any neighbours.
     if (town->second->neighbour.empty()) {
@@ -298,7 +298,7 @@ std::vector<TownID> Datastructures::taxer_path(TownID id)
 {
 
     std::vector<TownID> towns = {};
-    const auto town = database.find(id);
+    auto town = database.find(id);
 
     if(town == database.end()) {
         towns.push_back(NO_TOWNID);
@@ -312,6 +312,7 @@ std::vector<TownID> Datastructures::taxer_path(TownID id)
     while(town->second->parent != nullptr) {
         towns.push_back(town->second->parent->id);
         id = town->second->parent->id;
+        town = database.find(id);
     }
 
     return towns;
