@@ -425,7 +425,7 @@ int Datastructures::total_net_tax(TownID id)
 
 int Datastructures::distance_from_point(const Coord &coord, const Coord& point) const
 {
-    return sqrt(pow((point.x - coord.x),2.0) + pow((point.y - coord.y),2.0));
+    return sqrt(((point.x - coord.x)*(point.x - coord.x)) + ((point.y - coord.y)*(point.y - coord.y)));
 }
 
 std::vector<TownID> Datastructures::recursive_longest_path(Town* current_town, std::vector<TownID> current, std::vector<TownID>& longest)

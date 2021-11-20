@@ -98,7 +98,7 @@ public:
     // Estimate of performance: O(1)
     // Short rationale for estimate:
     // Gets the amount of towns from the hash. Size() is constant so performance
-    // is O(1),
+    // is O(1).
     unsigned int town_count();
 
     // Estimate of performance: O(N)
