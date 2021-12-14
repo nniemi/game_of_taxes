@@ -14,6 +14,8 @@
 #include <limits>
 #include <functional>
 #include <exception>
+#include <unordered_set>
+
 
 // Types for IDs
 using TownID = std::string;
@@ -223,7 +225,40 @@ public:
     Distance trim_road_network();
 
 private:
-    // Add stuff needed for your class implementation here
+
+
+    struct Town
+    {
+        TownID id = NO_TOWNID;
+        Name name = NO_NAME;
+        Coord coord = NO_COORD;
+        int tax = NO_VALUE;
+
+        Town* parent = nullptr;
+        std::vector<Town*> neighbour = {};
+        std::vector<std::pair<Town*,int>> road;
+    };
+
+    int distance_from_point(const Coord& coord, const Coord& point) const;
+    std::vector<TownID> recursive_longest_path(Town* current_town, std::vector<TownID> current, std::vector<TownID>& longest);
+    int recursive_total_tax(Town* current_town);
+
+
+    std::unordered_map<TownID, Town*> database;
+
+
+
+    struct Road {
+
+        Town* town1;
+        Town* town2;
+        int distance;
+
+
+    };
+
+    std::unordered_set<Road*> roads;
+
 
 };
 
