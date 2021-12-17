@@ -538,13 +538,6 @@ bool Datastructures::add_road(TownID town1, TownID town2)
     if(id1 == database.end() || id2 == database.end())
         return false;
 
-    /*
-    if(std::find_if(roads.begin(), roads.end(),[&](const Road* i)
-    { return (i->town1->id == town1 || i->town1->id == town2) && (i->town2->id == town1 || i->town2->id == town2);}),roads.end() != roads.end()) {
-            return false;
-    }
-    */
-
 
 
     // Creates a new road pointer
