@@ -496,6 +496,10 @@ void Datastructures::clear_roads()
     // Clears all roads
     roads.clear();
 
+    for(auto& i : database) {
+        i.second->road.clear();
+    }
+
 
 }
 
