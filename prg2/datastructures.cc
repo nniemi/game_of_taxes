@@ -1,8 +1,8 @@
 // Datastructures.cc
 //
-// Student name:
-// Student email:
-// Student number:
+// Student name:  Niemi
+
+
 
 #include "datastructures.hh"
 
@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <map>
 #include <unordered_set>
+#include <list>
 
 std::minstd_rand rand_engine; // Reasonably quick pseudo-random generator
 
@@ -50,7 +51,8 @@ unsigned int Datastructures::town_count()
 
 void Datastructures::clear_all()
 {
-
+    // Clears roads
+    clear_roads();
 
     // Deletes the pointers
     for(auto& town_pointer : database) {
@@ -168,7 +170,7 @@ std::vector<TownID> Datastructures::towns_alphabetically() {
 
     // Sorting the vector by town name.
     std::sort(towns.begin(), towns.end(),[](Town* a, Town* b)
-            {return a->name < b->name;});
+    {return a->name < b->name;});
 
 
     std::vector<TownID> towns_ordered;
@@ -485,8 +487,16 @@ int Datastructures::recursive_total_tax(Town *current_town)
 
 void Datastructures::clear_roads()
 {
+
+    // Deleting the road pointers to allocate memory
+    for(auto& road_pointer : roads) {
+        delete road_pointer;
+    }
+
     // Clears all roads
     roads.clear();
+
+
 }
 
 std::vector<std::pair<TownID, TownID>> Datastructures::all_roads()
@@ -496,32 +506,64 @@ std::vector<std::pair<TownID, TownID>> Datastructures::all_roads()
     // Reserving the vector
     all_roads.reserve(database.size());
 
-    for(auto& i : roads) {
-        all_roads.push_back(std::make_pair(i->town1->id,i->town2->id));
+
+    // Looping through the roads.
+    for(auto& town : roads) {
+
+        // If the town1 is "smaller" than town2, pushes town1 first to the vector
+        if(town->town1->id < town->town2->id) {
+            all_roads.push_back(std::make_pair(town->town1->id,town->town2->id));
+
+        } else {
+
+            // This means town2 is smaller here
+            all_roads.push_back(std::make_pair(town->town2->id,town->town1->id));
+        }
+
     }
 
+
+    // Returning the vector
     return all_roads;
 }
 
 bool Datastructures::add_road(TownID town1, TownID town2)
 {
-       const auto id1 = database.find(town1);
-       const auto id2 = database.find(town2);
 
-       if(id1 == database.end() || id2 == database.end()) {
-           return false;
-       }
+    // Formating the towns for easier use
+    const auto id1 = database.find(town1);
+    const auto id2 = database.find(town2);
+
+    // Checks if the towns are in the database
+    if(id1 == database.end() || id2 == database.end())
+        return false;
+
+    /*
+    if(std::find_if(roads.begin(), roads.end(),[&](const Road* i)
+    { return i->town2->id == town2 && i->town1->id == town1;}),roads.end() != roads.end()) {
+            return false;
+    }
+    */
 
 
+    // Creates a new road pointer
+    Road* new_road = new Road;
 
-       Road* new_road = new Road;
-       roads.insert(new_road);
-       new_road->town1 = id1->second;
-       new_road->town2 = id2->second;
-       new_road->distance = distance_from_point(id1->second->coord,id2->second->coord);
-       id1->second->road.push_back(std::make_pair(new_road->town2,new_road->distance));
-       id2->second->road.push_back(std::make_pair(new_road->town1,new_road->distance));
-       return true;
+    // Inserts the pointer to a database which is keeping track of all roads
+    roads.insert(new_road);
+
+    // Determines the end points of the road
+    new_road->town1 = id1->second;
+    new_road->town2 = id2->second;
+
+    // Determines the distance between towns
+    new_road->distance = distance_from_point(id1->second->coord,id2->second->coord);
+
+    // Adds the information to each town
+    id1->second->road.push_back(std::make_pair(new_road->town2,new_road->distance));
+    id2->second->road.push_back(std::make_pair(new_road->town1,new_road->distance));
+    return true;
+
 
 
 }
@@ -529,42 +571,159 @@ bool Datastructures::add_road(TownID town1, TownID town2)
 std::vector<TownID> Datastructures::get_roads_from(TownID id)
 {
 
+    // Formatting the town vector
     std::vector<TownID> town_vector;
+
+    // Formating the town
     const auto town = database.find(id);
 
+    // Checking if the town exists
     if(town == database.end()) {
         town_vector.push_back(NO_TOWNID);
         return town_vector;
     }
 
-    for (auto i : town->second->road) {
-        town_vector.push_back(i.first->id);
+    // Appending the ids from the towns road vector
+    for (auto town : town->second->road) {
+        town_vector.push_back(town.first->id);
     }
+
+    // Returns the town vector
     return town_vector;
 
 
 
 }
 
-std::vector<TownID> Datastructures::any_route(TownID /*fromid*/, TownID /*toid*/)
+std::vector<TownID> Datastructures::any_route(TownID fromid, TownID toid)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("any_route()");
+
+    // Since any route is wanted, why not use the shortest one
+    return least_towns_route(fromid,toid);
 }
 
-bool Datastructures::remove_road(TownID /*town1*/, TownID /*town2*/)
+bool Datastructures::remove_road(TownID town1, TownID town2)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("remove_road()");
+
+    auto id1 = database.find(town1);
+    auto id2 = database.find(town2);
+
+    if(id1 == database.end() || id2 == database.end())
+        return false;
+
+    /*
+    if(std::find_if(roads.begin(), roads.end(),[&](const Road* i)
+    { return i->town2->id == town2 && i->town1->id == town1;}),roads.end() == roads.end()) {
+            return false;
+    }
+    */
+
+
+    id1->second->road.erase(std::remove_if(id1->second->road.begin(), id1->second->road.end(),
+                               [&](const std::pair<Town*,int> i) { return i.first->id == town2;}),id1->second->road.end());
+
+    id2->second->road.erase(std::remove_if(id2->second->road.begin(), id2->second->road.end(),
+                               [&](const std::pair<Town*,int> i) { return i.first->id == town1;}),id2->second->road.end());
+
+
+
+
+    /*
+    roads.erase(std::remove_if(roads.begin(), roads.end(),
+                               [&](Road* i) { return i->town1->id == town1;}),roads.end());
+    */
+
+
+
+    return true;
 }
 
-std::vector<TownID> Datastructures::least_towns_route(TownID /*fromid*/, TownID /*toid*/)
+std::vector<TownID> Datastructures::least_towns_route(TownID fromid, TownID toid)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("least_towns_route()");
+
+    // Formating the BFS queue
+    std::list<Town*> queue;
+
+    // Fromating the route_vector
+    std::vector<TownID> route_vector;
+
+    // Formating the town pointers for easier use
+    const auto from_town = database.find(fromid);
+    const auto to_town = database.find((toid));
+
+    // Checking if the towns are found from the database
+    if(from_town == database.end() || to_town == database.end()) {
+        route_vector.push_back(NO_TOWNID);
+        return route_vector;
+    }
+
+    // Reseting the nodes which are towns
+    for(auto town : database) {
+        town.second->current_color = white;
+        town.second->road_parent = nullptr;
+    }
+
+
+    // Changing the starting node to grey
+    from_town->second->current_color = grey;
+
+    // Pushing the starting node to first
+    queue.push_back(from_town->second);
+
+    // Starting BFS loop
+    while (!queue.empty()) {
+
+        // Determing the first node
+        auto u  = queue.front();
+        queue.pop_front();
+
+        for(auto v : u->road) {
+
+            // If the current node color is whit aka. it hasn't been visited yet
+            if(v.first->current_color == white) {
+
+                // Changes the current color to grey
+                v.first->current_color = grey;
+
+                // Determinates the node predecessor
+                v.first->road_parent = u;
+
+                // Adding the current node to the queue
+                queue.push_front(v.first);
+
+                // Checks if the node is the wanted destination town.
+                if(v.first->id == toid) {
+                    break;
+
+                }
+                // Sets the u node to black aka. completely gone through
+                u->current_color = black;
+            }
+
+
+        }
+
+    }
+
+    // Determing the current town
+    auto current_town = to_town->second;
+
+    // Appending the destination id to the route_vector
+    route_vector.push_back(toid);
+
+
+    // Looping until hitting nullptr aka the starting node
+    while(current_town->road_parent != nullptr) {
+        route_vector.push_back(current_town->road_parent->id);
+        current_town = current_town->road_parent;
+    }
+
+    // Reserving the route_vector since it is wrong way around
+    std::reverse(route_vector.begin(), route_vector.end());
+
+    // Returning the route_vector
+    return route_vector;
+
 }
 
 std::vector<TownID> Datastructures::road_cycle_route(TownID /*startid*/)

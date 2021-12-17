@@ -1,8 +1,8 @@
 // Datastructures.hh
 //
-// Student name:
-// Student email:
-// Student number:
+// Student name:  Niemi
+
+
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
@@ -182,24 +182,32 @@ public:
 
     // Phase 2 operations
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Complexity is linear since algorithm
+    // Goes through all the elements in the unordered_map
     void clear_roads();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Looping through the road database so
+    // the complexity is linear.
     std::vector<std::pair<TownID, TownID>> all_roads();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Since the find-algorithm for std::vector is O(N), the whole
+    // function is linear despite most of the elements in this function are O(1)
+    // for example push_back.
     bool add_road(TownID town1, TownID town2);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: The find-algorith for unordered_map is O(1)
+    // on average, but O(N) at the worst. For-loop is linear so the complexity
+    // for the whole function is O(N).
     std::vector<TownID> get_roads_from(TownID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N+K)
+    // Short rationale for estimate: Calls for the least towns route which uses
+    // BFS-algorithm. BFS graph algorithm is O(N+K) which means
+    // N as towns and K as roads. This is O(N²) at worst.
     std::vector<TownID> any_route(TownID fromid, TownID toid);
 
     // Non-compulsory phase 2 operations
@@ -208,8 +216,10 @@ public:
     // Short rationale for estimate:
     bool remove_road(TownID town1, TownID town2);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N+K)
+    // Short rationale for estimate: Just as described on any_route function
+    // BFS-algorithm is O(N+K) where N is towns and K is roads, which means
+    // the function is O(N²) at worst.
     std::vector<TownID> least_towns_route(TownID fromid, TownID toid);
 
     // Estimate of performance:
@@ -227,6 +237,9 @@ public:
 private:
 
 
+    enum Color {white,grey,black};
+
+
     struct Town
     {
         TownID id = NO_TOWNID;
@@ -237,16 +250,17 @@ private:
         Town* parent = nullptr;
         std::vector<Town*> neighbour = {};
         std::vector<std::pair<Town*,int>> road;
+        Town* road_parent = nullptr;
+        Color current_color = white;
+        std::vector<TownID> route;
+
     };
 
     int distance_from_point(const Coord& coord, const Coord& point) const;
     std::vector<TownID> recursive_longest_path(Town* current_town, std::vector<TownID> current, std::vector<TownID>& longest);
     int recursive_total_tax(Town* current_town);
 
-
     std::unordered_map<TownID, Town*> database;
-
-
 
     struct Road {
 
@@ -258,6 +272,7 @@ private:
     };
 
     std::unordered_set<Road*> roads;
+    std::vector<std::string> road_string;
 
 
 };
