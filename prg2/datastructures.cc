@@ -540,17 +540,18 @@ bool Datastructures::add_road(TownID town1, TownID town2)
 
     /*
     if(std::find_if(roads.begin(), roads.end(),[&](const Road* i)
-    { return i->town2->id == town2 && i->town1->id == town1;}),roads.end() != roads.end()) {
+    { return (i->town1->id == town1 || i->town1->id == town2) && (i->town2->id == town1 || i->town2->id == town2);}),roads.end() != roads.end()) {
             return false;
     }
     */
+
 
 
     // Creates a new road pointer
     Road* new_road = new Road;
 
     // Inserts the pointer to a database which is keeping track of all roads
-    roads.insert(new_road);
+    roads.push_back(new_road);
 
     // Determines the end points of the road
     new_road->town1 = id1->second;
@@ -598,27 +599,23 @@ std::vector<TownID> Datastructures::get_roads_from(TownID id)
 std::vector<TownID> Datastructures::any_route(TownID fromid, TownID toid)
 {
 
-    // Since any route is wanted, why not use the shortest one
+    // Since any route is wanted, why not use the least towns one
     return least_towns_route(fromid,toid);
 }
 
 bool Datastructures::remove_road(TownID town1, TownID town2)
 {
 
+
+    // Formating the towns
     auto id1 = database.find(town1);
     auto id2 = database.find(town2);
 
+    // Checking that the towns exist
     if(id1 == database.end() || id2 == database.end())
         return false;
 
-    /*
-    if(std::find_if(roads.begin(), roads.end(),[&](const Road* i)
-    { return i->town2->id == town2 && i->town1->id == town1;}),roads.end() == roads.end()) {
-            return false;
-    }
-    */
-
-
+    // Removing the road from the town struct
     id1->second->road.erase(std::remove_if(id1->second->road.begin(), id1->second->road.end(),
                                [&](const std::pair<Town*,int> i) { return i.first->id == town2;}),id1->second->road.end());
 
@@ -627,11 +624,19 @@ bool Datastructures::remove_road(TownID town1, TownID town2)
 
 
 
+    // Checking the index for the road
+    unsigned int iterator = 0;
+    for(auto& it : roads) {
+        if((it->town1->id == town1 || it->town1->id == town2) && (it->town2->id == town1 || it->town2->id == town2)) {
+            break;
+        }
+        iterator++;
+    }
 
-    /*
-    roads.erase(std::remove_if(roads.begin(), roads.end(),
-                               [&](Road* i) { return i->town1->id == town1;}),roads.end());
-    */
+    // Erasing the road from the vector
+    if (iterator != roads.size()) {
+        roads.erase(roads.begin() + iterator);
+    }
 
 
 

@@ -212,8 +212,12 @@ public:
 
     // Non-compulsory phase 2 operations
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N²)
+    // Short rationale for estimate: The function contains erasing from vector
+    // and removing from vector (to find the correct road) so the
+    // complexity adds to O(N²). The for loop in the end doesn't affect the
+    // complexity due to rounding -> O(N²+N) = O(N²). All of these are in
+    // the worst case.
     bool remove_road(TownID town1, TownID town2);
 
     // Estimate of performance: O(N+K)
@@ -271,7 +275,7 @@ private:
 
     };
 
-    std::unordered_set<Road*> roads;
+    std::vector<Road*> roads;
     std::vector<std::string> road_string;
 
 
