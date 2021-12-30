@@ -1,23 +1,16 @@
-# Olet onnistuneesti hakenut päivitykset upstream repositorysta
+## Game Of Taxes
 
-# You have successfully pulled updates from the upstream repository
+This program was part of my Datastructures and Algorithms course during the fall of 2021. **Only the datastructures.cc, datastructures.hh and readme.txt are my own implementation, rest of the program is from our course professors and teachers**
 
-# Short explanation of tests in prg2 (phase 2)
+The course assignment was basically to create a database and implement different algorithms to perform different functions. The point was to make the program as efficient as possible. 
 
-- test-skeleton-in/out.txt: Test functionality required for submission in Plussa
-- smalltest-*-in/out.txt: A really simple minimal tests for operations (divided into separate test files, because most operations are non-compulsory)
-- example-*-in/out.txt: The assignment specification's example, divided into separate files for each operation
-- biggertest-*-in/out.txt: Bigger tests testing operations with town data from towns-data.txt (divided into separate test files, because most operations are non-compulsory)
-- example-in/out.txt: The assignment specification's example run
-- perftest-*.txt: These tests test the performance of various operations with growing number of towns and roads, using the main program perftest command
 
-# Short explanation of tests in prg1 (phase 1)
+# Prg1
+The first part of this program, introduces a database manipulator, where you can store 
+data from towns and use functions to display this data. There are 
+total of 20 different functions to store and display data. 
 
-- test-skeleton-in/out.txt: Test functionality required for skeleton (raakile) submissions (if you do only phase 1). This test **has to pass** correctly before Plussa accepts your submission (regardless of whether you just submit a skeleton or complete phase 1)
-- simpletest-in/out.txt: A really simple minimal test containing all compulsory operations
-- example-compulsory-in/out.txt: The assignment specification's example, but with only compulsory operations
-- basictest-in/out.txt: A little bigger test testing compulsory operations with the town data in the assignment specification example
-- biggertest-in/out.txt: A bigger test testing compulsory operations with town data from towns-data.txt an towns-vassals-data.txt
-- noncompulsory-in/out.txt: A bigger test testing non-compulsory operations with town data from towns-data.txt an towns-vassals-data.txt
-- example-in/out.txt: The assignment specification's example run
-- perftest-*.txt: These tests test the performance of various operations with growing number of towns, using the main program perftest command
+The idea of this part was to make the operations as fast as possible by implementing different sorting algorithms and decisions during coding the functions.
+
+# Prg2
+Second part of the program, still a bit improving to be done, introduces a road network to connect the towns which were implemented in Prg1. The idea was to use graph algorithms such as BFS, DFS, A* and Kruskal. Currently only BFS is implemented. 
